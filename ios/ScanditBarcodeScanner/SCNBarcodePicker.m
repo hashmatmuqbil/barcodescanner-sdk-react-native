@@ -198,6 +198,7 @@ static inline NSString *base64StringFromFrame(CMSampleBufferRef *frame) {
 
 - (void)dealloc {
     [_picker removeWarningsObserver:self];
+    [_picker removePropertyObserver:self];
 }
 
 - (void)layoutSubviews {
@@ -285,7 +286,9 @@ static inline NSString *base64StringFromFrame(CMSampleBufferRef *frame) {
     // Call `onBarcodeFrameAvailable` only when new codes have been recognized.
     if (self.shouldPassBarcodeFrame && session.newlyRecognizedCodes.count > 0) {
         NSDictionary *processedFrameDictionary = dictionaryFromBase64FrameString(base64StringFromFrame(&frame));
-        self.onBarcodeFrameAvailable(processedFrameDictionary);
+        if (self.onBarcodeFrameAvailable) {
+            self.onBarcodeFrameAvailable(processedFrameDictionary);
+        }
     }
 
     if (session.trackedCodes == nil) {
@@ -308,7 +311,9 @@ static inline NSString *base64StringFromFrame(CMSampleBufferRef *frame) {
 
     if (newlyTrackedCodes.count > 0) {
         NSDictionary *newCodes = dictionaryFromTrackedCodes(newlyTrackedCodes);
-        self.onRecognizeNewCodes(newCodes);
+        if (self.onRecognizeNewCodes) {
+            self.onRecognizeNewCodes(newCodes);
+        }
 
         // Suspend the session thread, until finishOnRecognizeNewCodesShouldStop:shouldPause:idsToVisuallyReject: is called from JS
         dispatch_semaphore_wait(self.didProcessFrameSemaphore, DISPATCH_TIME_FOREVER);
@@ -339,7 +344,9 @@ static inline NSString *base64StringFromFrame(CMSampleBufferRef *frame) {
         // Add 4 which represents `NOT_ENOUGH_CONTRAST_WARNING: 4` (check barcodePicker.js)
         [result addObject:@4];
     }
-    self.onWarnings(@{@"warnings": result});
+    if (self.onWarnings) {
+        self.onWarnings(@{@"warnings": result});
+    }
 }
 
 #pragma mark - SBSPropertyObserver
@@ -358,20 +365,28 @@ static inline NSString *base64StringFromFrame(CMSampleBufferRef *frame) {
             number = @(1);
         }
         NSDictionary *result = @{@"name": property, @"newState": number};
-        self.onPropertyChanged(result);
+        if (self.onPropertyChanged) {
+            self.onPropertyChanged(result);
+        }
     } else if ([property isEqualToString:@"relativeZoom"]) {
         number = @(number.floatValue * 1000);
         NSDictionary *result = @{@"name": property, @"newState": number};
-        self.onPropertyChanged(result);
+        if (self.onPropertyChanged) {
+            self.onPropertyChanged(result);
+        }
     } else if ([property isEqualToString:@"switchCamera"]) {
         NSDictionary *result = @{@"name": property, @"newState": number};
-        self.onPropertyChanged(result);
+        if (self.onPropertyChanged) {
+            self.onPropertyChanged(result);
+        }
     } else if ([property isEqualToString:@"recognitionMode"]) {
         if (number.unsignedIntegerValue == 4) { // text and barcodes
             number = @(3);
         }
         NSDictionary *result = @{@"name": property, @"newState": number};
-        self.onPropertyChanged(result);
+        if (self.onPropertyChanged) {
+            self.onPropertyChanged(result);
+        }
     }
 }
 
