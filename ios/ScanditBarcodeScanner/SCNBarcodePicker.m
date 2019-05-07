@@ -197,7 +197,6 @@ static inline NSString *base64StringFromFrame(CMSampleBufferRef *frame) {
 }
 
 - (void)dealloc {
-    [_picker removeWarningsObserver:self];
     [_picker removePropertyObserver:self];
 }
 
