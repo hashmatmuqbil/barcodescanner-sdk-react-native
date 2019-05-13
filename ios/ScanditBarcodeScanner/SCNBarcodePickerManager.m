@@ -31,13 +31,13 @@ RCT_EXPORT_MODULE(BarcodePicker)
 
 RCT_EXPORT_VIEW_PROPERTY(scanSettings, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(shouldPassBarcodeFrame, BOOL)
-RCT_EXPORT_VIEW_PROPERTY(onScan, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onRecognizeNewCodes, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onBarcodeFrameAvailable, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onTextRecognized, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onSettingsApplied, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onWarnings, RCTBubblingEventBlock)
-RCT_EXPORT_VIEW_PROPERTY(onPropertyChanged, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onScan, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onRecognizeNewCodes, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onBarcodeFrameAvailable, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onTextRecognized, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onSettingsApplied, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onWarnings, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPropertyChanged, RCTDirectEventBlock)
 
 RCT_EXPORT_METHOD(startScanning:(nonnull NSNumber *)reactTag) {
     [self.bridge.uiManager addUIBlock:
