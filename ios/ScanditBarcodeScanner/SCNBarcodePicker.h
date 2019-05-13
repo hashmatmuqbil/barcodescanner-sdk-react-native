@@ -17,13 +17,13 @@
 
 @property (nonatomic, strong, nullable) NSDictionary *scanSettings;
 @property (nonatomic) BOOL shouldPassBarcodeFrame;
-@property (nonatomic, copy, nullable) RCTBubblingEventBlock onScan;
-@property (nonatomic, copy, nullable) RCTBubblingEventBlock onBarcodeFrameAvailable;
-@property (nonatomic, copy, nullable) RCTBubblingEventBlock onRecognizeNewCodes;
-@property (nonatomic, copy, nullable) RCTBubblingEventBlock onTextRecognized;
-@property (nonatomic, copy, nullable) RCTBubblingEventBlock onSettingsApplied;
-@property (nonatomic, copy, nullable) RCTBubblingEventBlock onWarnings;
-@property (nonatomic, copy, nullable) RCTBubblingEventBlock onPropertyChanged;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onScan;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onBarcodeFrameAvailable;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onRecognizeNewCodes;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onTextRecognized;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onSettingsApplied;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onWarnings;
+@property (nonatomic, copy, nullable) RCTDirectEventBlock onPropertyChanged;
 
 - (void)finishOnScanCallbackShouldStop:(BOOL)shouldStop
                            shouldPause:(BOOL)shouldPause
