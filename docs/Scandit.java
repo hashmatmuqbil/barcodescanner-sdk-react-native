@@ -19,6 +19,21 @@ public class Scandit {
   }
 
   /**
+  * @brief A convenience class for quadrilaterals.
+  */
+  public class Quadrilateral {
+
+    /**
+    * @param topLeft The top left corner of the quadrilateral.
+    * @param topRight The top right corner of the quadrilateral.
+    * @param bottomLeft The bottom left corner of the quadrilateral.
+    * @param bottomRight The top right corner of the quadrilateral.
+    */
+    public Quadrilateral(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight);
+
+  }
+
+  /**
   * @brief A convenience class for points with an x and y coordinate.
   */
   public class Point {
@@ -59,11 +74,41 @@ public class Scandit {
     public Symbology symbology;
 
     /**
-    * @brief The composite flag of the barcode
+    * @brief The composite flag of the barcode.
     *
     * For codes that have been localized but not recognized, CompositeFlag.UNKNOWN is returned.
     */
     public CompositeFlag compositeFlag;
+
+    /**
+    * @brief Specifies if the barcode has been recognized or not.
+    */
+    public boolean isRecognized;
+
+    /**
+    * @brief The location of the barcode in the frame. (Only available for tracked codes if MatrixScan is enabled.)
+    */
+    public Quadrilateral location;
+
+    /**
+    * @brief The predicted location of the barcode in the frame. (Only available for tracked codes if MatrixScan is enabled.)
+    */
+    public Quadrilateral predictedLocation;
+
+    /**
+    * @brief The converted predicted location of the barcode in the coordinate system of the picker. (Only available for tracked codes if MatrixScan is enabled.)
+    */
+    public Quadrilateral convertedPredictedLocation;
+
+    /**
+    * @brief If the barcode should animate to the next state, used for visualizing tracked codes. (Only available for tracked codes if MatrixScan is enabled.)
+    */
+    public boolean shouldAnimateFromPreviousToNextState;
+
+    /**
+    * @brief The predicted time until the predicted location, used for visualizing tracked codes. (Only available for tracked codes if MatrixScan is enabled.)
+    */
+    public boolean deltaTimeForPrediction;
 
     // Hack to force doxygen to generate a documentation page for this class.
     public void noop();
@@ -283,12 +328,10 @@ public class Scandit {
 
   /**
   * @brief The main class for scanning barcodes with the Scandit Barcode Scanner.
-  *<p>
+  * <p>
   * This class sets up the recognition process, the preview view, controls the camera and provides
   * a callback interface when barcodes are recognized.
   * <p>
-  *
-  *
   */
   public class BarcodePicker {
 
@@ -306,6 +349,11 @@ public class Scandit {
     * @brief Prop used to set the matrix scan callback.
     */
     public function onRecognizeNewCodes;
+  
+    /**
+    * @brief Prop used to set the matrix scan callback that's called every frame to get continuous updates about tracked codes.
+    */
+    public function onChangeTrackedCodes;
 
     /**
     *  @brief Prop used to set a callback called after new settings have been applied.
@@ -428,8 +476,6 @@ public class Scandit {
     * is set to muted, no beep will be played regardless of the value.
     *
     * Enabled by default.
-    *
-    *
     *
     * @param enabled whether vibrate is enabled.
     */
@@ -705,8 +751,6 @@ public class Scandit {
 
     /**
     * Possible recognition modes.
-    *
-    *
     */
     public enum RecognitionMode {
 
@@ -722,8 +766,6 @@ public class Scandit {
 
     /**
     * Possible working ranges for the barcode picker
-    *
-    *
     */
     public enum WorkingRange {
 
@@ -847,8 +889,6 @@ public class Scandit {
     *
     * @param symbology the symbology settings to retrieve
     * @return the symbology settings object, or null, if symbology is an invalid symbology.
-    *
-    *
     */
     public SymbologySettings getSymbologySettings(Scandit.Barcode.Symbology symbology);
 
@@ -867,8 +907,6 @@ public class Scandit {
     *
     * @param symbology The symbology to be enabled.
     * @param enabled true when decoding of the symbology should be enabled, false if not.
-    *
-    *
     */
     public void setSymbologyEnabled(int symbology, boolean enabled);
 
@@ -878,8 +916,6 @@ public class Scandit {
     * well.
     * <p>
     * By default, the back-facing camera is preferred.
-    *
-    *
     */
     public CameraFacing cameraFacingPreference;
 
@@ -903,7 +939,6 @@ public class Scandit {
     * rejection is disabled.
     *
     * @see {@link ScanSession.rejectCode(Barcode)}
-    *
     */
     public boolean codeRejectionEnabled;
 
@@ -1053,8 +1088,6 @@ public class Scandit {
     *
     * It is advised to only enable symbologies that are required by the application as every enabled
     * symbology adds processing overhead.
-    *
-    *
     */
     public boolean enabled;
 
@@ -1064,7 +1097,6 @@ public class Scandit {
     *
     * It is advised to only enable symbologies that are required by the application as every enabled
     * symbology adds processing overhead.
-    *
     */
     public boolean colorInvertedEnabled;
 
@@ -1073,8 +1105,6 @@ public class Scandit {
     *
     * Extensions are custom features that are only supported by a small number of
     * symbologies. For a list of supported extensions, consult the constants of this class.
-    *
-    *
     */
     public Extension[] extensions;
 
@@ -1083,8 +1113,6 @@ public class Scandit {
     * decoded, the checksums contained are evaluated in addition to any mandatory checksum defined by
     * the symbology specification. If any of the checksums matches, the code is returned as
     * recognized, otherwise it is discarded.
-    *
-    *
     */
     public Checksum[] checksums;
 
@@ -1100,8 +1128,6 @@ public class Scandit {
     * The active symbol count setting is ignored for fixed-size barcodes (the EAN and UPC family of
     * codes) as well as 2d codes. For other symbologies, see <a href="../c_api/symbologies.html">
     * Calculating symbol counts for variable-length symbologies</a>.
-    *
-    *
     */
     public int[] activeSymbolCounts;
   }
@@ -1133,22 +1159,17 @@ public class Scandit {
   *
   * @see ScanSettings.codeCachingDuration
   * @see ScanSettings.codeDuplicateFilter
-  *
   */
   public class ScanSession {
 
     /**
     * List of barcodes that have been successfully recognized in the last frame.
-    *
-    *
     */
     public Barcode[] newlyRecognizedCodes;
 
     /**
     * List of barcodes that have been localized in the last frame. This list does not include
     * barcodes that have been successfully recognized.
-    *
-    *
     */
     public Barcode[] newlyLocalizedCodes;
 
@@ -1163,7 +1184,6 @@ public class Scandit {
     * @see ScanSettings.codeDuplicateFilter
     *
     * @return a new copy of the list of barcodes that have been successfully decoded in this session
-    *
     */
     public Barcode[] allRecognizedCodes;
 
@@ -1179,8 +1199,6 @@ public class Scandit {
     * <p>
     *
     * @see BarcodePicker.resumeScanning()
-    *
-    *
     */
     public void pauseScanning();
 
@@ -1191,8 +1209,6 @@ public class Scandit {
     * it.
     *
     * @see BarcodePicker.stopScanning(), pauseScanning()
-    *
-    *
     */
     public void stopScanning();
 
@@ -1214,8 +1230,72 @@ public class Scandit {
     * calls this method from the scan callback.
     *
     * @param code The code to reject
+    */
+    public void rejectCode(Barcode code);
+  }
+  public class MatrixScanSession {
+
+    /**
+    * List of barcodes that are newly tracked in the last frame.
+    */
+    public Barcode[] newlyTrackedCodes;
+
+    /**
+    * @brief Returns the list of barcodes (data, symbology) that are currently tracked.
     *
+    * Depending on the code caching and duplicate filtering behaviour, different
+    * sets of codes are returned by this method.
     *
+    * @see ScanSettings.codeCachingDuration
+    * @see ScanSettings.codeDuplicateFilter
+    *
+    * @return a new copy of the list of barcodes that have been successfully decoded in this session
+    */
+    public Barcode[] allTrackedCodes;
+
+    /**
+    * @brief Immediately Pauses barcode recognition, but keeps camera preview open.
+    *
+    * This is useful for briefly pausing the barcode recognition to show the
+    * recognized code in an overlay and then resume the scan process to scan
+    * more codes.
+    * <p>
+    * When only scanning one code and then returning to another part of the
+    * application, it is recommended to call {@link stopScanning()} instead.
+    * <p>
+    *
+    * @see BarcodePicker.resumeScanning()
+    */
+    public void pauseScanning();
+
+    /**
+    * Immediately stops the scanning and clears the scan session
+    * <p>
+    * Calling stop will release the camera, so that other applications can use
+    * it.
+    *
+    * @see BarcodePicker.stopScanning(), pauseScanning()
+    */
+    public void stopScanning();
+
+    /**
+    * @brief Prevent beeping/vibrate and highlighting for a particular code.
+    *
+    * Use this method to reject a certain code if you have additional methods for verifying
+    * the integrity of the code, e.g. with a custom checksum. Rejected
+    * codes won't be highlighted in the scan UI. Additionally beep and vibration
+    * will be surpressed.
+    *
+    * For code rejection to work, you must enabled it by setting
+    * {@link ScanSettings.codeRejectionEnabled code rejection} to true.
+    *
+    * Rejected codes will be added to {@link allRecognizedCodes} like all other codes.
+    *
+    * Note that you should only pass codes returned by {@link newlyRecognizedCodes}
+    * as passing any other code will have no effect. Additionally, you should only
+    * calls this method from the scan callback.
+    *
+    * @param code The code to reject
     */
     public void rejectCode(Barcode code);
   }
