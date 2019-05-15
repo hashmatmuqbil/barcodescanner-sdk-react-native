@@ -12,6 +12,7 @@ import com.scandit.barcodepicker.*
 import com.scandit.barcodepicker.BarcodePicker
 import com.scandit.barcodepicker.ocr.RecognizedText
 import com.scandit.barcodepicker.ocr.TextRecognitionListener
+import com.scandit.recognition.Quadrilateral
 import com.scandit.recognition.TrackedBarcode
 import java.io.ByteArrayOutputStream
 import java.lang.Thread
@@ -31,7 +32,8 @@ class BarcodePicker(
 
     private var picker: BarcodePicker? = null
     private var didScanLatch: CountDownLatch = CountDownLatch(1)
-    private var didProcessLatch: CountDownLatch = CountDownLatch(1)
+    private var didFinishOnRecognizeNewCodesLatch: CountDownLatch = CountDownLatch(1)
+    private var didFinishOnChangeTrackedCodesLatch: CountDownLatch = CountDownLatch(1)
     private var lastFrameRecognizedIds = HashSet<Long>()
     private var isMatrixScanEnabled = false
     private var nextPickerState = NextPickerState.CONTINUE
@@ -43,30 +45,29 @@ class BarcodePicker(
 
     override fun getName(): String = "BarcodePicker"
 
-    override fun getCommandsMap(): MutableMap<String, Int> {
-        val map = MapBuilder.newHashMap<String, Int>()
-        map.put("startScanning", COMMAND_START_SCANNING)
-        map.put("stopScanning", COMMAND_STOP_SCANNING)
-        map.put("resumeScanning", COMMAND_RESUME_SCANNING)
-        map.put("pauseScanning", COMMAND_PAUSE_SCANNING)
-        map.put("applySettings", COMMAND_APPLY_SETTINGS)
-        map.put("setViewfinderDimension", COMMAND_VIEWFINDER_DIMENSION)
-        map.put("switchTorchOn", COMMAND_SWITCH_TORCH_ON)
-        map.put("setTorchEnabled", COMMAND_TORCH_ENABLED)
-        map.put("setVibrateEnabled", COMMAND_VIBRATE_ENABLED)
-        map.put("setBeepEnabled", COMMAND_BEEP_ENABLED)
-        map.put("setTorchButtonMarginsAndSize", COMMAND_TORCH_BUTTON_MARGINS_AND_SIZE)
-        map.put("setCameraSwitchVisibility", COMMAND_CAMERA_SWITCH_VISIBILITY)
-        map.put("setCameraSwitchMarginsAndSize", COMMAND_CAMERA_SWITCH_MARGINS_AND_SIZE)
-        map.put("setViewfinderColor", COMMAND_VIEWFINDER_COLOR)
-        map.put("setViewfinderDecodedColor", COMMAND_VIEWFINDER_DECODED_COLOR)
-        map.put("setMatrixScanHighlightingColor", COMMAND_MATRIX_HIGHLIGHT_COLOR)
-        map.put("setOverlayProperty", COMMAND_SET_OVERLAY_PROPERTY)
-        map.put("setGuiStyle", COMMAND_SET_GUI_STYLE)
-        map.put("setTextRecognitionSwitchVisible", COMMAND_SET_TEXT_RECOGNITION_SWITCH_ENABLED)
-        map.put("finishOnScanCallback", COMMAND_FINISH_ON_SCAN_CALLBACK)
-        map.put("finishOnRecognizeNewCodes", COMMAND_FINISH_ON_RECOGNIZE_NEW_CODES_CALLBACK)
-        return map
+    override fun getCommandsMap(): MutableMap<String, Int> = MapBuilder.newHashMap<String, Int>().apply {
+        put("startScanning", COMMAND_START_SCANNING)
+        put("stopScanning", COMMAND_STOP_SCANNING)
+        put("resumeScanning", COMMAND_RESUME_SCANNING)
+        put("pauseScanning", COMMAND_PAUSE_SCANNING)
+        put("applySettings", COMMAND_APPLY_SETTINGS)
+        put("setViewfinderDimension", COMMAND_VIEWFINDER_DIMENSION)
+        put("switchTorchOn", COMMAND_SWITCH_TORCH_ON)
+        put("setTorchEnabled", COMMAND_TORCH_ENABLED)
+        put("setVibrateEnabled", COMMAND_VIBRATE_ENABLED)
+        put("setBeepEnabled", COMMAND_BEEP_ENABLED)
+        put("setTorchButtonMarginsAndSize", COMMAND_TORCH_BUTTON_MARGINS_AND_SIZE)
+        put("setCameraSwitchVisibility", COMMAND_CAMERA_SWITCH_VISIBILITY)
+        put("setCameraSwitchMarginsAndSize", COMMAND_CAMERA_SWITCH_MARGINS_AND_SIZE)
+        put("setViewfinderColor", COMMAND_VIEWFINDER_COLOR)
+        put("setViewfinderDecodedColor", COMMAND_VIEWFINDER_DECODED_COLOR)
+        put("setMatrixScanHighlightingColor", COMMAND_MATRIX_HIGHLIGHT_COLOR)
+        put("setOverlayProperty", COMMAND_SET_OVERLAY_PROPERTY)
+        put("setGuiStyle", COMMAND_SET_GUI_STYLE)
+        put("setTextRecognitionSwitchVisible", COMMAND_SET_TEXT_RECOGNITION_SWITCH_ENABLED)
+        put("finishOnScanCallback", COMMAND_FINISH_ON_SCAN_CALLBACK)
+        put("finishOnRecognizeNewCodes", COMMAND_FINISH_ON_RECOGNIZE_NEW_CODES_CALLBACK)
+        put("finishOnChangeTrackedCodes", COMMAND_FINISH_ON_CHANGE_TRACKED_CODES_CALLBACK)
     }
 
     override fun receiveCommand(root: BarcodePicker, commandId: Int, args: ReadableArray?) {
@@ -101,8 +102,9 @@ class BarcodePicker(
             COMMAND_SET_OVERLAY_PROPERTY -> setOverlayProperty(args)
             COMMAND_SET_GUI_STYLE -> setGuiStyle(args)
             COMMAND_SET_TEXT_RECOGNITION_SWITCH_ENABLED -> setTextRecognitionSwitchVisible(args)
-            COMMAND_FINISH_ON_SCAN_CALLBACK -> finishOnScanCallback(args)
-            COMMAND_FINISH_ON_RECOGNIZE_NEW_CODES_CALLBACK -> finishDidProcessCallback(args)
+            COMMAND_FINISH_ON_SCAN_CALLBACK -> finishOnScan(args)
+            COMMAND_FINISH_ON_RECOGNIZE_NEW_CODES_CALLBACK -> finishOnRecognizeNewCodes(args)
+            COMMAND_FINISH_ON_CHANGE_TRACKED_CODES_CALLBACK -> finishOnChangeTrackedCodes(args)
         }
     }
 
@@ -120,16 +122,15 @@ class BarcodePicker(
         return picker as BarcodePicker
     }
 
-    override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {
-        return MapBuilder.of(
-                "onScan", MapBuilder.of("registrationName", "onScan"),
-                "onBarcodeFrameAvailable", MapBuilder.of("registrationName", "onBarcodeFrameAvailable"),
-                "onRecognizeNewCodes", MapBuilder.of("registrationName", "onRecognizeNewCodes"),
-                "onSettingsApplied", MapBuilder.of("registrationName", "onSettingsApplied"),
-                "onTextRecognized", MapBuilder.of("registrationName", "onTextRecognized"),
-                "onWarnings", MapBuilder.of("registrationName", "onWarnings"),
-                "onPropertyChanged", MapBuilder.of("registrationName", "onPropertyChanged")
-        )
+    override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> = MapBuilder.newHashMap<String, Any>().apply {
+        put("onScan", MapBuilder.of("registrationName", "onScan"))
+        put("onBarcodeFrameAvailable", MapBuilder.of("registrationName", "onBarcodeFrameAvailable"))
+        put("onRecognizeNewCodes", MapBuilder.of("registrationName", "onRecognizeNewCodes"))
+        put("onSettingsApplied", MapBuilder.of("registrationName", "onSettingsApplied"))
+        put("onTextRecognized", MapBuilder.of("registrationName", "onTextRecognized"))
+        put("onWarnings", MapBuilder.of("registrationName", "onWarnings"))
+        put("onPropertyChanged", MapBuilder.of("registrationName", "onPropertyChanged"))
+        put("onChangeTrackedCodes", MapBuilder.of("registrationName", "onChangeTrackedCodes"))
     }
 
     override fun didProcess(buffer: ByteArray?, width: Int, height: Int, scanSession: ScanSession?) {
@@ -139,6 +140,7 @@ class BarcodePicker(
 
         val context = picker?.context as ReactContext?
 
+        // Call `onBarcodeFrameAvailable` only when new codes have been recognized.
         if (shouldPassBarcodeFrame && scanSession.newlyRecognizedCodes.size > 0) {
             val event = Arguments.createMap()
             event.putString("base64FrameString", base64StringFromByteArray(buffer, width, height))
@@ -150,26 +152,43 @@ class BarcodePicker(
             return
         }
 
-        val trackedCodes = scanSession.trackedCodes
-        val newlyTrackedCodes = ArrayList<TrackedBarcode>()
-        val recognizedCodeIds = HashSet<Long>()
+        val trackedCodes: Map<Long, TrackedBarcode> = scanSession.trackedCodes
+        val newlyTrackedCodes: MutableMap<Long, TrackedBarcode> = hashMapOf()
+        val recognizedCodeIds: HashSet<Long> = hashSetOf()
 
         for (entry in trackedCodes.entries) {
             if (entry.value.isRecognized) {
                 recognizedCodeIds.add(entry.key)
                 if (!lastFrameRecognizedIds.contains(entry.key)) {
-                    newlyTrackedCodes.add(entry.value)
+                    newlyTrackedCodes[entry.key] = entry.value
                 }
             }
         }
         lastFrameRecognizedIds = recognizedCodeIds
-        if (newlyTrackedCodes.isEmpty()) {
-            return
+
+        val matrixScanSessionMap =
+                picker?.let {
+                    matrixScanSessionCodesToMap(trackedCodes, newlyTrackedCodes, it)
+                } ?: Arguments.createMap()
+
+        if (isMatrixScanEnabled) {
+            context?.getJSModule(RCTEventEmitter::class.java)?.receiveEvent(picker?.id ?: 0,
+                    "onChangeTrackedCodes", matrixScanSessionMap)
+            // Suspend the session thread, until finishOnChangeTrackedCodes is called from JS
+            didFinishOnChangeTrackedCodesLatch.await()
+            handleFinishingSemaphore(scanSession)
         }
 
-        context?.getJSModule(RCTEventEmitter::class.java)?.receiveEvent(picker?.id ?: 0,
-                "onRecognizeNewCodes", (newlyTrackedCodesToMap(newlyTrackedCodes)))
-        didProcessLatch.await()
+        if (newlyTrackedCodes.isNotEmpty()) {
+            context?.getJSModule(RCTEventEmitter::class.java)?.receiveEvent(picker?.id ?: 0,
+                    "onRecognizeNewCodes", matrixScanSessionMap)
+            // Suspend the session thread, until finishOnRecognizeNewCodes is called from JS
+            didFinishOnRecognizeNewCodesLatch.await()
+            handleFinishingSemaphore(scanSession)
+        }
+    }
+
+    private fun handleFinishingSemaphore(scanSession: ScanSession) {
         for (id in idsToReject) {
             scanSession.rejectTrackedCode(scanSession.trackedCodes[id.toLong()])
         }
@@ -284,16 +303,17 @@ class BarcodePicker(
         nextPickerState = NextPickerState.CONTINUE
     }
 
-    private fun finishOnScanCallback(args: ReadableArray?) {
-        if (args?.getBoolean(0) == true)
-            nextPickerState = NextPickerState.STOP
-        if (args?.getBoolean(1) == true)
-            nextPickerState = NextPickerState.PAUSE
-        var index = 0
-        val array = args?.getArray(2)
-        while (index < array?.size() ?: 0) {
-            codesToReject.add(array?.getInt(index++) ?: continue)
-        }
+    /**
+     * Callback method that will be invoked by the JS side once the result of OnScan has been received and processed by JS layer.
+     * Arguments in the args array are as follows:
+     * 1. shouldStop flag
+     * 2. shouldPause flag
+     * 3. idsToVisuallyReject
+     */
+    private fun finishOnScan(args: ReadableArray?) {
+        updateNextPickerState(args)
+
+        args?.getArray(2)?.let { addIdsToReject(it) }
 
         synchronized(didScanLatch) {
             didScanLatch.countDown()
@@ -301,18 +321,54 @@ class BarcodePicker(
         }
     }
 
-    private fun finishDidProcessCallback(args: ReadableArray?) {
+    /**
+     * Callback method that will be invoked by the JS side once the result of OnRecognizeNewCodes has been received and processed by JS layer.
+     * Arguments in the args array are as follows:
+     * 1. shouldStop flag
+     * 2. shouldPause flag
+     * 3. idsToVisuallyReject
+     */
+    private fun finishOnRecognizeNewCodes(args: ReadableArray?) {
+        updateNextPickerState(args)
+
+        args?.getArray(2)?.let { addIdsToReject(it) }
+
+        synchronized(didFinishOnRecognizeNewCodesLatch) {
+            didFinishOnRecognizeNewCodesLatch.countDown()
+            didFinishOnRecognizeNewCodesLatch = CountDownLatch(1)
+        }
+    }
+
+    /**
+     * Callback method that will be invoked by the JS side once the result of OnChangeTrackedCodes has been received and processed by JS layer.
+     * Arguments in the args array are as follows:
+     * 1. shouldStop flag
+     * 2. shouldPause flag
+     * 3. idsToVisuallyReject
+     */
+    private fun finishOnChangeTrackedCodes(args: ReadableArray?) {
+        updateNextPickerState(args)
+
+        args?.getArray(2)?.let { addIdsToReject(it) }
+
+        synchronized(didFinishOnChangeTrackedCodesLatch) {
+            didFinishOnChangeTrackedCodesLatch.countDown()
+            didFinishOnChangeTrackedCodesLatch = CountDownLatch(1)
+        }
+    }
+
+    private fun updateNextPickerState(args: ReadableArray?) {
         if (args?.getBoolean(0) == true)
             nextPickerState = NextPickerState.STOP
         if (args?.getBoolean(1) == true)
             nextPickerState = NextPickerState.PAUSE
+    }
+
+    private fun addIdsToReject(array: ReadableArray) {
         var index = 0
-        val array = args?.getArray(2)
-        while (index < array?.size() ?: 0) {
-            idsToReject.add(array?.getString(index++) ?: continue)
+        while (index < array.size()) {
+            idsToReject.add(array.getString(index++) ?: continue)
         }
-        didProcessLatch.countDown()
-        didProcessLatch = CountDownLatch(1)
     }
 
     private fun setScanSettings(args: ReadableArray?) {

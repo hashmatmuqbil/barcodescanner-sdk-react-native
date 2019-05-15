@@ -1,6 +1,7 @@
 package com.scandit.reactnative
 
 import com.facebook.react.bridge.*
+import com.scandit.barcodepicker.BarcodePicker
 import com.scandit.barcodepicker.ScanOverlay
 import com.scandit.barcodepicker.ScanSession
 import com.scandit.barcodepicker.ScanSettings
@@ -36,17 +37,43 @@ fun sessionToMap(scanSession: ScanSession?): WritableMap {
     return event
 }
 
-fun newlyTrackedCodesToMap(codes: List<TrackedBarcode>): WritableMap {
-    val event = Arguments.createMap()
+fun matrixScanSessionCodesToMap(
+    allTrackedCodes: Map<Long, TrackedBarcode>,
+    newlyTrackedCodes: Map<Long, TrackedBarcode>,
+    picker: BarcodePicker
+): WritableMap {
+    val map = Arguments.createMap()
 
-    val newlyTrackedCodes = Arguments.createArray()
-    codes.forEach { barcode ->
-        newlyTrackedCodes.pushMap(barcodeToMap(barcode, barcode.id))
-    }
-    event.putArray("newlyTrackedCodes", newlyTrackedCodes)
+    map.putArray("allTrackedCodes", trackedBarcodesToArray(allTrackedCodes, picker))
+    map.putArray("newlyTrackedCodes", trackedBarcodesToArray(newlyTrackedCodes, picker))
 
-    return event
+    return map
 }
+
+private fun trackedBarcodesToArray(codes: Map<Long, TrackedBarcode>, picker: BarcodePicker): WritableArray {
+    val array = Arguments.createArray()
+
+    codes.forEach { _, barcode ->
+        val codeMap = Arguments.createMap()
+        codeMap.putInt("deltaTimeForPrediction", barcode.deltaTimeForPrediction.toInt())
+        codeMap.putBoolean("shouldAnimateFromPreviousToNextState", barcode.shouldAnimateFromPreviousToNextState())
+        codeMap.putMap("predictedLocation", quadrilateralToMap(barcode.predictedLocation))
+        codeMap.putMap("convertedPredictedLocation", quadrilateralToMap(picker.convertQuadrilateral(barcode.predictedLocation)))
+        codeMap.putMap("convertedLocation", quadrilateralToMap(picker.convertQuadrilateral(barcode.predictedLocation)))
+
+        array.pushMap(codeMap)
+    }
+
+    return array
+}
+
+private fun BarcodePicker.convertQuadrilateral(rect: Quadrilateral): Quadrilateral =
+        Quadrilateral(
+                convertPointToPickerCoordinates(rect.top_left),
+                convertPointToPickerCoordinates(rect.top_right),
+                convertPointToPickerCoordinates(rect.bottom_left),
+                convertPointToPickerCoordinates(rect.bottom_right)
+        )
 
 fun warningsToMap(warnings: Set<Int>): WritableMap {
     val event = Arguments.createMap()

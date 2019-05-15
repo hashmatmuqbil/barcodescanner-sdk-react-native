@@ -101,6 +101,11 @@ public class Scandit {
     public Quadrilateral convertedPredictedLocation;
 
     /**
+    * @brief The converted location of the barcode in the coordinate system of the picker. (Only available for tracked codes if MatrixScan is enabled.)
+    */
+    public Quadrilateral convertedLocation;
+
+    /**
     * @brief If the barcode should animate to the next state, used for visualizing tracked codes. (Only available for tracked codes if MatrixScan is enabled.)
     */
     public boolean shouldAnimateFromPreviousToNextState;
