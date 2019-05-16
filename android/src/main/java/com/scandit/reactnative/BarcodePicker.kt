@@ -22,7 +22,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import java.util.HashSet
-
+import android.util.Log
 
 
 class BarcodePicker(
@@ -170,6 +170,11 @@ class BarcodePicker(
                 picker?.let {
                     matrixScanSessionCodesToMap(trackedCodes, newlyTrackedCodes, it)
                 } ?: Arguments.createMap()
+        // TODO (SDK-10994) replace with a proper clone() method
+        val matrixScanSessionMapClone =
+                picker?.let {
+                    matrixScanSessionCodesToMap(trackedCodes, newlyTrackedCodes, it)
+                } ?: Arguments.createMap()
 
         if (isMatrixScanEnabled) {
             context?.getJSModule(RCTEventEmitter::class.java)?.receiveEvent(picker?.id ?: 0,
@@ -181,7 +186,7 @@ class BarcodePicker(
 
         if (newlyTrackedCodes.isNotEmpty()) {
             context?.getJSModule(RCTEventEmitter::class.java)?.receiveEvent(picker?.id ?: 0,
-                    "onRecognizeNewCodes", matrixScanSessionMap)
+                    "onRecognizeNewCodes", matrixScanSessionMapClone)
             // Suspend the session thread, until finishOnRecognizeNewCodes is called from JS
             didFinishOnRecognizeNewCodesLatch.await()
             handleFinishingSemaphore(scanSession)
