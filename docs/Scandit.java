@@ -86,7 +86,7 @@ public class Scandit {
     public boolean isRecognized;
 
     /**
-    * @brief The location of the barcode in the frame. (Only available for tracked codes if MatrixScan is enabled.)
+    * @brief The location of the barcode in the frame.
     */
     public Quadrilateral location;
 

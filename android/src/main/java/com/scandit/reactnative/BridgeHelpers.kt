@@ -50,11 +50,14 @@ fun matrixScanSessionCodesToMap(
     return map
 }
 
-private fun trackedBarcodesToArray(codes: Map<Long, TrackedBarcode>, picker: BarcodePicker): WritableArray {
+private fun trackedBarcodesToArray(
+    codes: Map<Long, TrackedBarcode>,
+    picker: BarcodePicker
+): WritableArray {
     val array = Arguments.createArray()
 
     codes.forEach { _, barcode ->
-        val codeMap = Arguments.createMap()
+        val codeMap = barcodeToMap(barcode)
         codeMap.putInt("deltaTimeForPrediction", barcode.deltaTimeForPrediction.toInt())
         codeMap.putBoolean("shouldAnimateFromPreviousToNextState", barcode.shouldAnimateFromPreviousToNextState())
         codeMap.putMap("predictedLocation", quadrilateralToMap(barcode.predictedLocation))
