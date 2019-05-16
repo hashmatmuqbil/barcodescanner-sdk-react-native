@@ -1,5 +1,8 @@
 package com.scandit.reactnative
 
+
+import android.content.Context
+import android.graphics
 import com.facebook.react.bridge.*
 import com.scandit.barcodepicker.BarcodePicker
 import com.scandit.barcodepicker.ScanOverlay
@@ -56,8 +59,8 @@ private fun trackedBarcodesToArray(
 ): WritableArray {
     val array = Arguments.createArray()
 
-    codes.forEach { _, barcode ->
-        val codeMap = barcodeToMap(barcode)
+    codes.forEach { id, barcode ->
+        val codeMap = barcodeToMap(barcode, id)
         codeMap.putInt("deltaTimeForPrediction", barcode.deltaTimeForPrediction.toInt())
         codeMap.putBoolean("shouldAnimateFromPreviousToNextState", barcode.shouldAnimateFromPreviousToNextState())
         codeMap.putMap("predictedLocation", quadrilateralToMap(barcode.predictedLocation))
@@ -72,11 +75,19 @@ private fun trackedBarcodesToArray(
 
 private fun BarcodePicker.convertQuadrilateral(rect: Quadrilateral): Quadrilateral =
         Quadrilateral(
-                convertPointToPickerCoordinates(rect.top_left),
-                convertPointToPickerCoordinates(rect.top_right),
-                convertPointToPickerCoordinates(rect.bottom_left),
-                convertPointToPickerCoordinates(rect.bottom_right)
+                dpFromPx(context, convertPointToPickerCoordinates(rect.top_left)),
+                dpFromPx(context, convertPointToPickerCoordinates(rect.top_right)),
+                dpFromPx(context, convertPointToPickerCoordinates(rect.bottom_left)),
+                dpFromPx(context, convertPointToPickerCoordinates(rect.bottom_right))
         )
+
+private fun dpFromPx(context: Context, point: Point): Point {
+    val displayDensity = context.resources.displayMetrics.density
+    return Point(
+            (point.x / displayDensity).toInt(),
+            (point.y / displayDensity).toInt()
+    )
+}
 
 fun warningsToMap(warnings: Set<Int>): WritableMap {
     val event = Arguments.createMap()
