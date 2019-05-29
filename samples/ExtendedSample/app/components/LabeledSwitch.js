@@ -24,8 +24,8 @@ export default class LabeledSwitch extends Component {
         </Text>
         <Switch
           disabled= { this.props.disabled }
-          thumbTintColor='blue'
-          onTintColor='cornflowerblue'
+          thumbColor='blue'
+          trackColor='cornflowerblue'
           value={ this.props.value }
           onValueChange={ this.props.listener }/>
       </View>
@@ -50,8 +50,8 @@ export class LabeledSwitchWithFunctionValue extends Component {
       </Text>
       <Switch
         disabled= { this.props.disabled }
-        thumbTintColor='blue'
-        onTintColor='cornflowerblue'
+        thumbColor='blue'
+        trackColor='cornflowerblue'
         value={ this.props.value() }
         onValueChange={ this.props.listener }/>
     </View>

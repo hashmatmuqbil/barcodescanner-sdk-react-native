@@ -11,7 +11,6 @@ import {
   AsyncStorage,
   ScrollView,
   Switch,
-  Slider,
   Picker,
   Alert,
   TouchableWithoutFeedback,
