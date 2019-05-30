@@ -8,7 +8,6 @@ import {
   View,
   Button,
   ActivityIndicator,
-  AsyncStorage,
   ScrollView,
   Switch,
   Picker,
@@ -16,6 +15,8 @@ import {
   TouchableWithoutFeedback,
   Image
 } from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {
   BarcodePicker,

@@ -3,6 +3,7 @@ package com.scandit.extendedsample;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.scandit.reactnative.ScanditPackage;
 import com.facebook.react.ReactNativeHost;
@@ -24,6 +25,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.asList(new MainReactPackage(),
+            new AsyncStoragePackage(),
             new ReactSliderPackage(), new ScanditPackage());
     }
   };
