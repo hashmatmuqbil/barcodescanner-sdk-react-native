@@ -347,7 +347,7 @@ public class Scandit {
 
     /**
      *  @brief Prop used to inform the picker whether it should make the frame data available
-     *  via {@link BarcodePicker.onBarcodeFrameAvailable} callback.
+     *  via the {@link BarcodePicker.onBarcodeFrameAvailable} callback.
      */
     public boolean shouldPassBarcodeFrame;
 
@@ -372,11 +372,11 @@ public class Scandit {
     public function onSettingsApplied;
 
     /**
-     *  @brief Prop used to set a callback that provides frame data in base 64 string format.
+     *  @brief Prop used to set a callback that provides frame data in base64 string format.
      *
-     *  The onBarcodeFrameAvailable method is executed after each frame processed by the picker,
+     *  The onBarcodeFrameAvailable method is executed after each frame is processed by the picker,
      *  but only if new codes have been recognized in that particular frame.
-     *  Note that the callback will only be invoked,
+     *  Note that the callback will only be invoked
      *  if the {@link BarcodePicker.shouldPassBarcodeFrame} property is set to true.
      */
     public function onBarcodeFrameAvailable;
