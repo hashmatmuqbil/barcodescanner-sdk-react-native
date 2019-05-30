@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 
 import {
   Text,
-  View,
-  Slider
+  View
 } from 'react-native';
+
+import Slider from '@react-native-community/slider';
 
 export default class LabeledSlider extends Component {
   

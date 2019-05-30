@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -45,6 +44,7 @@
 		A2972D5C1FEA82D60042FBA7 /* ScanditBarcodeScanner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2972D5B1FEA82D60042FBA7 /* ScanditBarcodeScanner.framework */; };
 		A2972D5E1FEA82DC0042FBA7 /* ScanditBarcodeScanner.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A2972D5D1FEA82DC0042FBA7 /* ScanditBarcodeScanner.bundle */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		C81B9D9B86F24DE995554F29 /* libRNCSlider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0661069C22F6445CB37740DB /* libRNCSlider.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -364,6 +364,8 @@
 		A2972D5D1FEA82DC0042FBA7 /* ScanditBarcodeScanner.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = ScanditBarcodeScanner.bundle; path = ScanditSDK/ScanditBarcodeScanner.framework/Resources/ScanditBarcodeScanner.bundle; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B9444BFCCDDE4C7FA10B3F45 /* RCTScanditBarcodeScanner.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTScanditBarcodeScanner.xcodeproj; path = "../node_modules/scandit-react-native/ios/RCTScanditBarcodeScanner.xcodeproj"; sourceTree = "<group>"; };
+		7DCE613C349C4A8B8B937D7A /* RNCSlider.xcodeproj */ = {isa = PBXFileReference; name = "RNCSlider.xcodeproj"; path = "../node_modules/@react-native-community/slider/ios/RNCSlider.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		0661069C22F6445CB37740DB /* libRNCSlider.a */ = {isa = PBXFileReference; name = "libRNCSlider.a"; path = "libRNCSlider.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -399,6 +401,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				C81B9D9B86F24DE995554F29 /* libRNCSlider.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -577,6 +580,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				B9444BFCCDDE4C7FA10B3F45 /* RCTScanditBarcodeScanner.xcodeproj */,
+				7DCE613C349C4A8B8B937D7A /* RNCSlider.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1229,12 +1233,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/scandit-react-native/ios/ScanditBarcodeScanner/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 				);
 				INFOPLIST_FILE = ExtendedSampleTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1254,12 +1260,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/scandit-react-native/ios/ScanditBarcodeScanner/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 				);
 				INFOPLIST_FILE = ExtendedSampleTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1281,6 +1289,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/scandit-react-native/ios/ScanditBarcodeScanner/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 				);
 				INFOPLIST_FILE = ExtendedSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
@@ -1305,6 +1314,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/scandit-react-native/ios/ScanditBarcodeScanner/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 				);
 				INFOPLIST_FILE = ExtendedSample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
@@ -1335,11 +1345,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/scandit-react-native/ios/ScanditBarcodeScanner/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 				);
 				INFOPLIST_FILE = "ExtendedSample-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1369,11 +1381,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/scandit-react-native/ios/ScanditBarcodeScanner/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/slider/ios",
 				);
 				INFOPLIST_FILE = "ExtendedSample-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1404,6 +1418,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.ExtendedSample-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1428,6 +1443,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.ExtendedSample-tvOSTests";
