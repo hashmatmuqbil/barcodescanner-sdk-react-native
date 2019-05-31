@@ -4,11 +4,12 @@ import {
   Text,
   View,
   ActivityIndicator,
-  AsyncStorage,
   ScrollView,
   Picker,
   Image
 } from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {
   Barcode,

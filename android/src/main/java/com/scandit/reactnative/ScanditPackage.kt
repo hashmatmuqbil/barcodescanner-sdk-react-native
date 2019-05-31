@@ -17,6 +17,7 @@ class ScanditPackage() : ReactPackage {
         return modules
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun createViewManagers(reactContext: ReactApplicationContext): MutableList<SimpleViewManager<View>> {
         val managers = ArrayList<SimpleViewManager<View>>()
         managers.add(BarcodePicker(cameraApiSetting) as SimpleViewManager<View>)

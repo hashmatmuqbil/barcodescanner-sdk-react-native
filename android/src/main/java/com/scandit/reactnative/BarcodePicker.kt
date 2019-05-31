@@ -274,6 +274,7 @@ class BarcodePicker(
         view.applyScanSettings(settings)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     @ReactProp(name = "shouldPassBarcodeFrame")
     fun setPropScanSettings(view: BarcodePicker, shouldPassBarcodeFrame: Boolean) {
         this.shouldPassBarcodeFrame = shouldPassBarcodeFrame

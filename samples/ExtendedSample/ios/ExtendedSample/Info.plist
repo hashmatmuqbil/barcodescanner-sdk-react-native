@@ -52,6 +52,6 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>dsaa</string>
+	<string>For barcode scanning</string>
 </dict>
 </plist>
