@@ -11,6 +11,11 @@ export class CommandDispatcher {
       this.pickerViewHandle, UIManager.getViewManagerConfig('BarcodePicker').Commands.startScanning, null);
   }
 
+  startScanningInPausedState() {
+    UIManager.dispatchViewManagerCommand(
+      this.pickerViewHandle, UIManager.getViewManagerConfig('BarcodePicker').Commands.startScanningInPausedState, null);
+  }
+
   stopScanning() {
     UIManager.dispatchViewManagerCommand(
       this.pickerViewHandle, UIManager.getViewManagerConfig('BarcodePicker').Commands.stopScanning, null);
