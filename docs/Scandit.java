@@ -355,7 +355,6 @@ public class Scandit {
     * resume it later. It is not recommended to use this method when you are interrupting the
     * scanning process for longer periods of time as the camera preview will use considerable
     * power. For such scenarios use {@link ScanSession.stopScanning} instead.
-    *
     */
     public void pauseScanning();
 
@@ -364,22 +363,24 @@ public class Scandit {
     *
     * Use this method to resume scanning after {@link ScanSession.pauseScanning} or
     * {@link pauseScanning} was called. Calling resume on a picker that was not previously
-    * started with with startScanning() is undefined.
-    *
+    * started with startScanning() or startScanningInPausedState() is not possible.
     */
     public void resumeScanning();
 
     /**
     * @brief Asynchronously stop the scanning process and camera preview
-    *
     */
     public void stopScanning();
 
     /**
     * @brief Asynchronously start the camera preview and scanning process
-    *
     */
     public void startScanning();
+
+    /**
+    * @brief Asynchronously start the camera preview and initialize the scanning process in a paused state
+    */
+    public void startScanningInPausedState();
 
     /**
     * Set the barcode picker GUI style

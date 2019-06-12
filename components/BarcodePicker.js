@@ -119,6 +119,10 @@ export class BarcodePicker extends React.Component {
         this.dispatcher.startScanning();
     }
 
+    startScanningInPausedState() {
+        this.dispatcher.startScanningInPausedState();
+    }
+
     stopScanning() {
         this.dispatcher.stopScanning();
     }
