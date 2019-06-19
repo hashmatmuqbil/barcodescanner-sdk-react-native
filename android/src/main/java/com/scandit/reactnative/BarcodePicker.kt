@@ -175,11 +175,7 @@ class BarcodePicker(
                 picker?.let {
                     matrixScanSessionCodesToMap(trackedCodes, newlyTrackedCodes, it)
                 } ?: Arguments.createMap()
-        // TODO (SDK-10994) replace with a proper clone() method
-        val matrixScanSessionMapClone =
-                picker?.let {
-                    matrixScanSessionCodesToMap(trackedCodes, newlyTrackedCodes, it)
-                } ?: Arguments.createMap()
+        val matrixScanSessionMapClone = matrixScanSessionMap.copy()
 
         if (isMatrixScanEnabled) {
             context?.getJSModule(RCTEventEmitter::class.java)?.receiveEvent(picker?.id ?: 0,

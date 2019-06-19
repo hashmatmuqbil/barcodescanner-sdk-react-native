@@ -231,3 +231,9 @@ fun ReadableMap.toJson(): JSONObject {
 }
 
 fun settingsFromMap(map: ReadableMap): ScanSettings = ScanSettings.createWithJson(map.toJson())
+
+fun WritableMap.copy(): WritableMap {
+    val target = Arguments.createMap()
+    target.merge(this)
+    return target
+}
