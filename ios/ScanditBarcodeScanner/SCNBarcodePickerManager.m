@@ -272,9 +272,9 @@ RCT_EXPORT_METHOD(setViewfinderDecodedColor:(nonnull NSNumber *)reactTag
      }];
 }
 
-RCT_EXPORT_METHOD(setMatrixScanColor:(nonnull NSNumber *)reactTag
-                  color:(UIColor *)color
-                  state:(SBSMatrixScanHighlightingState)state) {
+RCT_EXPORT_METHOD(setMatrixScanHighlightingColor:(nonnull NSNumber *)reactTag
+                  state:(SBSMatrixScanHighlightingState)state
+                  color:(UIColor *)color) {
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
          id view = viewRegistry[reactTag];

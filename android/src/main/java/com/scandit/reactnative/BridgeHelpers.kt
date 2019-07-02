@@ -157,11 +157,10 @@ fun convertCameraSwitchVisibility(jsValue: String?): Int = when (jsValue) {
 }
 
 fun convertMatrixScanState(jsValue: String?): Int = when (jsValue) {
-    "stateLocalized" -> ScanOverlay.MATRIX_SCAN_HIGHLIGHTING_STATE_LOCALIZED
-    "stateRecognized" -> ScanOverlay.MATRIX_SCAN_HIGHLIGHTING_STATE_RECOGNIZED
-    "stateRejected" -> ScanOverlay.MATRIX_SCAN_HIGHLIGHTING_STATE_REJECTED
-    else -> throw IllegalArgumentException("Matrix scan state has to be one of: stateLocalized, stateRecognized, " +
-            "stateRejected")
+    "localized" -> ScanOverlay.MATRIX_SCAN_HIGHLIGHTING_STATE_LOCALIZED
+    "recognized" -> ScanOverlay.MATRIX_SCAN_HIGHLIGHTING_STATE_RECOGNIZED
+    "rejected" -> ScanOverlay.MATRIX_SCAN_HIGHLIGHTING_STATE_REJECTED
+    else -> throw IllegalArgumentException("Matrix scan state has to be one of: localized, recognized, rejected")
 }
 
 fun quadrilateralToMap(quadrilateral: Quadrilateral?): WritableMap {
