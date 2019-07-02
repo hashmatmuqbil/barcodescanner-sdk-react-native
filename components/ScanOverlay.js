@@ -19,7 +19,7 @@ ScanOverlay.GuiStyle = {
 }
 
 ScanOverlay.MatrixScanState = {
-  MATRIX_SCAN_STATE_LOCALIZED: 'stateLocalized',
-  MATRIX_SCAN_STATE_RECOGNIZED: 'stateRecognized',
-  MATRIX_SCAN_STATE_REJECTED: 'stateRejected'
+  MATRIX_SCAN_STATE_LOCALIZED: 'localized',
+  MATRIX_SCAN_STATE_RECOGNIZED: 'recognized',
+  MATRIX_SCAN_STATE_REJECTED: 'rejected'
 }
