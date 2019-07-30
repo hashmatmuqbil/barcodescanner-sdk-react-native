@@ -1,1 +1,2 @@
 *.pbxproj -text
+ios/ScanditBarcodeScanner/Frameworks/ScanditBarcodeScanner.framework/ScanditBarcodeScanner filter=lfs diff=lfs merge=lfs -text
