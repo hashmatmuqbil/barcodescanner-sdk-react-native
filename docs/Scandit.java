@@ -382,11 +382,6 @@ public class Scandit {
     public function onBarcodeFrameAvailable;
 
     /**
-    *  @brief Prop used to set the text recognition callback.
-    */
-    public function onTextRecognized;
-
-    /**
      *  @brief Prop used to set the warnings callback.
      *
      *  The onWarnings method will be executed after every time a warning is raised
