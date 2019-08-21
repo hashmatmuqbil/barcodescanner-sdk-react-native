@@ -24,7 +24,4 @@ For Android, you have nothing to do. Only working with iOS requires the followin
 First, you have to download the iOS SDK from Scandit's website.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > cp ScanditBarcodeScanner.framework <directory of your project/node_modules/scandit-react-native/ios/ScanditBarcodeScanner/Frameworks/>
-> cp ScanditOCR.bundle <directory of your project/node_modules/scandit-react-native/ios/ScanditBarcodeScanner/Assets/>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Then make sure, your iOS app is linked against the sqlite3 library.
