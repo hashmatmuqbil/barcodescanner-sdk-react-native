@@ -15,9 +15,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/Scandit/barcodescanner-sdk-react-native.git", :tag => package['version'] }
   s.source_files  = "ios/**/*.{h,m}"
   s.vendored_frameworks = 'ios/ScanditBarcodeScanner/Frameworks/ScanditBarcodeScanner.framework'
-  s.resource_bundles = {
-    'ScanditOCR' => ['ios/ScanditBarcodeScanner/Assets/ScanditOCR.bundle']
-  }
   s.frameworks = 'CoreText', 'OpenGLES', 'MessageUI', 'CoreVideo', 'UIKit', 'Foundation', 'CoreGraphics', 'AudioToolbox', 'AVFoundation', 'CoreMedia', 'QuartzCore', 'SystemConfiguration', 'MediaPlayer', 'Accelerate'
   s.libraries = 'c++', 'iconv', 'z'
 
