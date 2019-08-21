@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
     'ScanditOCR' => ['ios/ScanditBarcodeScanner/Assets/ScanditOCR.bundle']
   }
   s.frameworks = 'CoreText', 'OpenGLES', 'MessageUI', 'CoreVideo', 'UIKit', 'Foundation', 'CoreGraphics', 'AudioToolbox', 'AVFoundation', 'CoreMedia', 'QuartzCore', 'SystemConfiguration', 'MediaPlayer', 'Accelerate'
-  s.libraries = 'c++', 'iconv', 'z'
+  s.libraries = 'c++', 'iconv', 'z', 'sqlite3'
 
   s.dependency 'React'
 end
