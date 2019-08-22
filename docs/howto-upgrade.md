@@ -21,7 +21,4 @@ Whenever you update to the newest version you simply need to remove the already 
 
 For Android, you have nothing to do. Only working with iOS requires the following steps:
 
-First, you have to download the iOS SDK from Scandit's website.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> cp ScanditBarcodeScanner.framework <directory of your project/node_modules/scandit-react-native/ios/ScanditBarcodeScanner/Frameworks/>
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+First, you have to download the iOS SDK from Scandit's website. Then you need to copy the `ScanditBarcodeScanner.framework` file to the `project_directory/node_modules/scandit-react-native/ios/ScanditBarcodeScanner/Frameworks/` folder.
