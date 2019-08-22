@@ -31,6 +31,15 @@ update_versions() {
   rm ${the_file}.bak
 }
 
+package_version=$(cat package.json | python -c 'import sys,json; print json.load(sys.stdin)["version"]')
+if [[ $package_version != *"SNAPSHOT" ]];
+then
+    echo "Tagging with version: ${package_version}"
+    git tag -a $package_version -m "Tag release: ${package_version}"
+    git push --tags
+    echo "Tagged version ${package_version} pushed."
+fi
+
 update_versions
 
 echo 'updated project version for react native plugin'
