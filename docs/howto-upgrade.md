@@ -16,3 +16,9 @@ Whenever you update to the newest version you simply need to remove the already 
 > rm -rf node_modules/scandit-react-native/
 > yarn install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## How to use the Scandit Barcode Scanner with React Native newer than 0.60.0
+
+For Android, you have nothing to do. Only working with iOS requires the following steps:
+
+First, you have to download the iOS SDK from Scandit's website. Then you need to copy the `ScanditBarcodeScanner.framework` file to the `project_directory/node_modules/scandit-react-native/ios/ScanditBarcodeScanner/Frameworks/` folder.

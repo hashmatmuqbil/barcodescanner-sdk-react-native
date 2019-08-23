@@ -26,11 +26,6 @@
     "react-native": ">=0.58.0",
     "prop-types": ">15.5"
   },
-  "rnpm": {
-    "android": {
-      "sourceDir": "./android"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Scandit/barcodescanner-sdk-react-native"
